@@ -1,0 +1,56 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:30867",
+      "sslPort": 44339
+    }
+  },
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5263",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TYT_DB_URL": "localhost",
+        "TYT_DB_PORT": "5432",
+        "TYT_DB_NAME": "tyt_db_local",
+        "TYT_DB_USER": "",
+        "TYT_DB_PASSWORD": ""
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:8080;http://localhost:5263",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TYT_DB_URL": "localhost",
+        "TYT_DB_PORT": "5432",
+        "TYT_DB_NAME": "tyt_db_local",
+        "TYT_DB_USER": "",
+        "TYT_DB_PASSWORD": ""
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TYT_DB_URL": "localhost",
+        "TYT_DB_PORT": "5432",
+        "TYT_DB_NAME": "tyt_db_local",
+        "TYT_DB_USER": "",
+        "TYT_DB_PASSWORD": ""
+      }
+    }
+  }
+}
