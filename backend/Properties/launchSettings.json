@@ -48,8 +48,8 @@
         "TYT_DB_URL": "localhost",
         "TYT_DB_PORT": "5432",
         "TYT_DB_NAME": "tyt_db_local",
-        "TYT_DB_USER": "",
-        "TYT_DB_PASSWORD": ""
+        "TYT_DB_USER": "postgres",
+        "TYT_DB_PASSWORD": "postgres"
       }
     }
   }

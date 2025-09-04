@@ -3,13 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using backend.DataAccess;
-using backend.ErrorHandling;
-using backend.Swagger;
+using Backend.ErrorHandling;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,12 +20,25 @@ builder.Services.AddCors(options
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configure PostgreSQL Database
+var host = Environment.GetEnvironmentVariable("TYT_DB_HOST") ?? "localhost";
+var port = Environment.GetEnvironmentVariable("TYT_DB_PORT") ?? "5432";
+var user = Environment.GetEnvironmentVariable("TYT_DB_USER") ?? "postgres";
+var password = Environment.GetEnvironmentVariable("TYT_DB_PASSWORD") ?? "password";
+var database = Environment.GetEnvironmentVariable("TYT_DB_NAME") ?? "TrackYourThings";
 
-builder.Services.AddDataAccess();
+var connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password}";
+
+builder.Services.AddDbContext<TytDbContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
-app.Services.MigrateDatabase();
+// Migrate database
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<TytDbContext>();
+    context.Database.Migrate();
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();

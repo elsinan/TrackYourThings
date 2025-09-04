@@ -23,7 +23,7 @@ public static class DependencyInjection
 
         var connectionString = $"Host={url};Port={port};User Id={user};Password={password};Database={database}";
 
-        serviceCollection.AddDbContext<TytDbContext>(options => options.UseSqlServer(connectionString));
+        serviceCollection.AddDbContext<TytDbContext>(options => options.UseNpgsql(connectionString));
 
         return serviceCollection;
     }

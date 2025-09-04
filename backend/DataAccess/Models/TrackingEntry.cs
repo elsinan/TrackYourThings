@@ -1,3 +1,5 @@
+namespace backend.DataAccess.Models;
+
 public class TrackingEntry
 {
 

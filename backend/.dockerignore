@@ -1,0 +1,33 @@
+# Build outputs
+bin/
+obj/
+out/
+
+# Dependencies
+packages/
+
+# IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Tests
+**/*Tests/
+**/*Test/

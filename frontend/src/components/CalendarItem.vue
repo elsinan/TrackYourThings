@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 
-import { CalendarDate } from '@internationalized/date'
 import CalendarInput from './CalendarInput.vue'
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { useCalendarStore } from '@/stores/calendarStore'
+
+const store = useCalendarStore()
 
 const data = shallowRef([
-  new CalendarDate(2025, 9, 1),
-  new CalendarDate(2025, 9, 2),
-  new CalendarDate(2025, 9, 3),
+
 ])
 const items: DropdownMenuItem[] = [
   {
@@ -28,7 +28,7 @@ const items: DropdownMenuItem[] = [
   {
     label: 'Löschen',
     icon: 'i-lucide-trash',
-    color: 'error',
+    color: 'warning',
     onSelect: () => {
       // Handle delete
     },
@@ -60,7 +60,7 @@ const items: DropdownMenuItem[] = [
       </template>
     </UCalendar>
 
-    <template #footer>
+    <template #footer v-if="store.dateSelected">
       <CalendarInput />
     </template>
   </UCard>

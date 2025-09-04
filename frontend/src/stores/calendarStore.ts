@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
-import { CalendarDate } from '@internationalized/date'
+import { CalendarDate, getLocalTimeZone, now, toCalendarDate } from '@internationalized/date'
 
-export const useCounterStore = defineStore('calendar', {
+export const useCalendarStore = defineStore('calendar', {
   state: () => ({
     trackedItems: [],
-    itemEntries: [],
-    selectedDate: CalendarDate,
+    trackingEntries: {},
+    dateSelected: false,
+    selectedDate: toCalendarDate(now(getLocalTimeZone())),
     selectedTrackItemId: '',
+    selectedTrackItem: '',
   }),
   actions: {
     getAllTrackedItems() {},
@@ -19,10 +21,10 @@ export const useCounterStore = defineStore('calendar', {
 
     deleteTrackedItem() {},
 
-    addTrackEntry() {},
+    addTrackingEntry() {},
 
-    deleteTrackEntry() {},
+    deleteTrackingEntry() {},
 
-    modifyTrackEntry() {},
+    modifyTrackingEntry() {},
   },
 })

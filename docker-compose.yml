@@ -1,0 +1,59 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trackyourthings-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: trackyourthings-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - TYT_DB_HOST=postgres
+      - TYT_DB_PORT=5432
+      - TYT_DB_USER=postgres
+      - TYT_DB_PASSWORD=postgres
+      - TYT_DB_NAME=trackyourthings
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: trackyourthings-postgres
+    environment:
+      - POSTGRES_DB=trackyourthings
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

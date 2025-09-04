@@ -1,3 +1,4 @@
+
 using backend.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ public class TytDbContext : DbContext
     public TytDbContext(DbContextOptions<TytDbContext> options)
         : base(options) { }
 
-    public DbSet<TodoItem> Todos { get; set; }
+    public DbSet<TrackedItem> TrackedItems { get; set; }
+    public DbSet<TrackingEntry> TrackingEntry { get; set; }
 }
 
