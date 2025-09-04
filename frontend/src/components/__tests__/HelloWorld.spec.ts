@@ -1,11 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 
-import { mount } from '@vue/test-utils'
-import CalenderItem from '../CalendarItem.vue'
+beforeEach(() => {
+  setActivePinia(createPinia())
+})
 
-describe('HelloWorld', () => {
-  it('renders properly', () => {
-    const wrapper = mount(CalenderItem)
-    expect(wrapper.text()).toContain('Kalender')
+it('renders properly', () => {
+  const wrapper = mount(CalenderItem, {
+    global: {
+      plugins: [createPinia()],
+    },
   })
+  expect(wrapper.text()).toContain('Kalender')
 })
