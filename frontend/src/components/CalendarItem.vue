@@ -25,6 +25,14 @@ const items: DropdownMenuItem[] = [
       // Handle data export
     },
   },
+  {
+    label: 'Löschen',
+    icon: 'i-lucide-trash',
+    color: 'error',
+    onSelect: () => {
+      // Handle delete
+    },
+  },
 ]
 </script>
 

@@ -10,7 +10,7 @@ const value = ref('Sport')
       <div class="flex items-center-safe m-5 gap-5 justify-between">
 
             <div class="flex gap-3 items-center">
-              <h1 class="text-xl font-bold">Track Your</h1>
+              <h1 class="text-2xl font-bold">Track Your</h1>
               <UButtonGroup>
 
                 <USelectMenu

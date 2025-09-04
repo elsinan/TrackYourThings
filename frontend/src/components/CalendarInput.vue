@@ -5,10 +5,10 @@
       <UButton size="xl" label="Speichern" />
     </div>
     <UButtonGroup>
-      <UBadge color="neutral" variant="subtle" size="lg" icon="i-lucide-calculator" />
-      <UInputNumber placeholder="Menge" />
+      <UBadge color="neutral" variant="outline" size="lg" icon="i-lucide-calculator" class="px-2" />
+      <UInputNumber variant="outline" placeholder="Menge" />
     </UButtonGroup>
-    <UTextarea icon="i-lucide-pencil" placeholder="Notiz hinzufügen..." :rows="5"  autoresize/>
+    <UTextarea icon="i-lucide-pencil" placeholder="Notiz hinzufügen..." :rows="5" autoresize />
   </div>
 </template>
 

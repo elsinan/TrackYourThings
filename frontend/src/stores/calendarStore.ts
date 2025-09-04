@@ -1,17 +1,28 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { CalendarDate } from '@internationalized/date'
 
-type CalendarEntry = {
-  amount: number
-  note: string
-}
 export const useCounterStore = defineStore('calendar', {
   state: () => ({
-    trackedItems :[],
-
+    trackedItems: [],
+    itemEntries: [],
+    selectedDate: CalendarDate,
+    selectedTrackItemId: '',
   }),
   actions: {
+    getAllTrackedItems() {},
 
-  }
-}
-)
+    getTrackedItem() {},
+
+    createTrackedItem() {},
+
+    modifyTrackedItem() {},
+
+    deleteTrackedItem() {},
+
+    addTrackEntry() {},
+
+    deleteTrackEntry() {},
+
+    modifyTrackEntry() {},
+  },
+})
