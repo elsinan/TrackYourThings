@@ -7,9 +7,7 @@ import { useCalendarStore } from '@/stores/calendarStore'
 
 const store = useCalendarStore()
 
-const data = shallowRef([
-
-])
+const data = shallowRef([])
 const items: DropdownMenuItem[] = [
   {
     label: 'Namen ändern',

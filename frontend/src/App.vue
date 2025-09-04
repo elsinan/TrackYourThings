@@ -8,23 +8,20 @@ const value = ref('Sport')
   <UApp>
     <header>
       <div class="flex items-center-safe m-5 gap-5 justify-between">
-
-            <div class="flex gap-3 items-center">
-              <h1 class="text-2xl font-bold">Track Your</h1>
-              <UButtonGroup>
-
-                <USelectMenu
-                size="xl"
-                v-model="value"
-                v-bind:class="'text-lg font-bold'"
-                :items="items"
-                class="w-40"
-                />
-                <UButton size="xl" color="neutral" icon="i-lucide-plus" />
-              </UButtonGroup>
-            </div>
-
+        <div class="flex gap-3 items-center">
+          <h1 class="text-2xl font-bold">Track Your</h1>
+          <UButtonGroup>
+            <USelectMenu
+              size="xl"
+              v-model="value"
+              v-bind:class="'text-lg font-bold'"
+              :items="items"
+              class="w-40"
+            />
+            <UButton size="xl" color="neutral" icon="i-lucide-plus" />
+          </UButtonGroup>
         </div>
+      </div>
     </header>
 
     <main>

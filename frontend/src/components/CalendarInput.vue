@@ -11,7 +11,13 @@
         }}
       </h2>
       <div class="flex flex-row gap-4">
-        <UButton size="xl" icon="i-lucide-trash" variant="outline" color="error" @click="store.dateSelected=false" />
+        <UButton
+          size="xl"
+          icon="i-lucide-trash"
+          variant="outline"
+          color="error"
+          @click="store.dateSelected = false"
+        />
         <UButton size="xl" label="Speichern" />
       </div>
     </div>

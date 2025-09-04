@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CalendarDate, getLocalTimeZone, now, toCalendarDate } from '@internationalized/date'
+import { getLocalTimeZone, now, toCalendarDate } from '@internationalized/date'
 
 export const useCalendarStore = defineStore('calendar', {
   state: () => ({
