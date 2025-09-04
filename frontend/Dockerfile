@@ -2,13 +2,16 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Enable Corepack for Yarn
+RUN corepack enable
+
 # Copy package files
-COPY package*.json ./
-RUN npm ci --only=production
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 # Copy source code and build
 COPY . .
-RUN npm run build
+RUN yarn build
 
 # Production stage
 FROM nginx:alpine AS runtime

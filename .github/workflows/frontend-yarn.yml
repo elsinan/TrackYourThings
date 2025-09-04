@@ -1,0 +1,73 @@
+name: Frontend CI with Yarn
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'frontend/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'frontend/**' ]
+
+jobs:
+  frontend-ci:
+    runs-on: ubuntu-latest
+    name: Frontend CI
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js with Yarn
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: './frontend/yarn.lock'
+
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      working-directory: ./frontend
+
+    - name: Cache yarn dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+      working-directory: ./frontend
+
+    - name: Check for security vulnerabilities
+      run: yarn audit --level moderate
+      working-directory: ./frontend
+      continue-on-error: true
+
+    - name: Lint
+      run: yarn lint
+      working-directory: ./frontend
+
+    - name: Type check
+      run: yarn type-check
+      working-directory: ./frontend
+
+    - name: Run tests
+      run: yarn test:unit --run
+      working-directory: ./frontend
+
+    - name: Build for production
+      run: yarn build
+      working-directory: ./frontend
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: frontend-build
+        path: frontend/dist/
+        retention-days: 7
