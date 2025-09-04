@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import CalendarItem from '../components/CalendarItem.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <CalendarItem />
   </main>
 </template>

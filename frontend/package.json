@@ -20,6 +20,7 @@
     "openapi:generate": "openapi-generator-cli generate && yarn lint --no-inline-config ./src/api/generated && yarn lint && yarn format"
   },
   "dependencies": {
+    "@nuxt/ui": "^3.3.3",
     "@tailwindcss/vite": "^4.1.12",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.12",

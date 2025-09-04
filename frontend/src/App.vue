@@ -1,85 +1,53 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+const items = ref(['Sport', 'Meditation', 'Schlaf'])
+const value = ref('Sport')
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <UApp>
+    <header>
+      <div class="flex items-center-safe m-5 gap-5 justify-between">
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+            <div class="flex gap-3 items-center">
+              <h1 class="text-xl font-bold">Track Your</h1>
+              <UButtonGroup>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+                <USelectMenu
+                size="xl"
+                v-model="value"
+                v-bind:class="'text-lg font-bold'"
+                :items="items"
+                class="w-40"
+                />
+                <UButton size="xl" color="neutral" icon="i-lucide-plus" />
+              </UButtonGroup>
+            </div>
 
-  <RouterView />
+        </div>
+    </header>
+
+    <main>
+      <div class="m-5">
+        <RouterView />
+      </div>
+    </main>
+
+    <footer>
+      <div class="flex align-center justify-center p-5">
+        <nav class="flex gap-x-10">
+          <RouterLink to="/impressum"> Impressum </RouterLink>
+
+          <RouterLink to="/datenschutz"> Datenschutz </RouterLink>
+          <UButton
+            variant="subtle"
+            color="neutral"
+            label="Zum Code"
+            trailing-icon="i-lucide-github"
+            href="https://github.com/elsinan/TrackYourThings"
+          />
+        </nav>
+      </div>
+    </footer>
+  </UApp>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
