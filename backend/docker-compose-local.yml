@@ -1,7 +1,7 @@
 # Backend and database service for local frontend development
 services:
   backend:
-    image: gitlab.dit.htwk-leipzig.de:5050/masterprojekt-consent-server-2024/backend:latest
+    image: ghcr.io/elsinan/trackyourthings/backend:latest
     build:
       context: .
     container_name: backend-local
@@ -25,7 +25,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=tyt_db_local
     ports:
-      - 5432:5432
+      - 5434:5432  # Verwende Port 5434 für lokale Entwicklung
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
