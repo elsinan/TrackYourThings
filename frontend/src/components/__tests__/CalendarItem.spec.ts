@@ -24,5 +24,4 @@ describe('CalendarItem.vue', () => {
       }),
     )
   })
-
 })
