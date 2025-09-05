@@ -1,0 +1,170 @@
+name: Deploy to Azure Container Instances
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_BACKEND: ${{ github.repository }}-backend
+  IMAGE_NAME_FRONTEND: ${{ github.repository }}-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        file: ./backend/Dockerfile
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        file: ./frontend/Dockerfile
+        push: true
+        tags: |
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Delete existing backend container (if exists)
+      run: |
+        az container delete \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name trackyourthings-backend \
+          --yes || true
+
+    - name: Delete existing frontend container (if exists)
+      run: |
+        az container delete \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name trackyourthings-frontend \
+          --yes || true
+
+    - name: Deploy Backend to ACI
+      run: |
+        az container create \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name trackyourthings-backend \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }} \
+          --dns-name-label trackyourthings-backend-${{ github.run_number }} \
+          --ports 8080 \
+          --environment-variables \
+            TYT_DB_HOST=${{ secrets.AZURE_DB_SERVER_NAME }}.postgres.database.azure.com \
+            TYT_DB_PORT=5432 \
+            TYT_DB_USER=postgres \
+            TYT_DB_PASSWORD=${{ secrets.AZURE_DB_PASSWORD }} \
+            TYT_DB_NAME=trackyourthings \
+            ASPNETCORE_ENVIRONMENT=Production \
+            ASPNETCORE_URLS=http://+:8080 \
+          --registry-login-server ${{ env.REGISTRY }} \
+          --registry-username ${{ github.actor }} \
+          --registry-password ${{ secrets.GITHUB_TOKEN }} \
+          --cpu 1 \
+          --memory 2 \
+          --restart-policy Always
+
+    - name: Wait for backend to be ready
+      run: |
+        echo "⏳ Waiting for backend to start..."
+        sleep 60
+        
+        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        
+        for i in {1..10}; do
+          if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
+            echo "✅ Backend is healthy!"
+            break
+          else
+            echo "⏳ Backend not ready yet, waiting... ($i/10)"
+            sleep 30
+          fi
+        done
+
+    - name: Deploy Frontend to ACI
+      run: |
+        # Get backend URL for frontend configuration
+        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        
+        az container create \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --name trackyourthings-frontend \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }} \
+          --dns-name-label trackyourthings-frontend-${{ github.run_number }} \
+          --ports 80 \
+          --environment-variables \
+            VITE_API_URL=$BACKEND_URL \
+          --registry-login-server ${{ env.REGISTRY }} \
+          --registry-username ${{ github.actor }} \
+          --registry-password ${{ secrets.GITHUB_TOKEN }} \
+          --cpu 0.5 \
+          --memory 1 \
+          --restart-policy Always
+
+    - name: Get deployment URLs
+      run: |
+        echo "🚀 Deployment completed successfully!"
+        echo ""
+        echo "📋 Deployment Information:"
+        echo "Backend URL: http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        echo "Frontend URL: http://trackyourthings-frontend-${{ github.run_number }}.polandcentral.azurecontainer.io"
+        echo "Backend Health: http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080/health"
+        echo ""
+        echo "💾 Database Information:"
+        echo "Host: ${{ secrets.AZURE_DB_SERVER_NAME }}.postgres.database.azure.com"
+        echo "Database: trackyourthings"
+        echo "User: postgres"
+
+    - name: Test deployment
+      run: |
+        echo "🧪 Testing deployment..."
+        
+        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        FRONTEND_URL="http://trackyourthings-frontend-${{ github.run_number }}.polandcentral.azurecontainer.io"
+        
+        echo "Testing backend health..."
+        if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
+          echo "✅ Backend health check passed"
+        else
+          echo "❌ Backend health check failed"
+        fi
+        
+        echo "Testing frontend..."
+        if curl -f "$FRONTEND_URL" > /dev/null 2>&1; then
+          echo "✅ Frontend is accessible"
+        else
+          echo "❌ Frontend is not accessible"
+        fi

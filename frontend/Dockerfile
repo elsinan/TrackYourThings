@@ -9,8 +9,16 @@ RUN corepack enable
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Copy source code and build
+# Copy source code
 COPY . .
+
+# Build argument for API URL (can be overridden during build)
+ARG VITE_API_URL=http://localhost:8080
+
+# Set environment variable for build
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build the application
 RUN yarn build
 
 # Production stage
@@ -23,6 +31,11 @@ COPY --from=build /app/dist .
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# Add script to handle runtime environment variables
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
 EXPOSE 80
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
