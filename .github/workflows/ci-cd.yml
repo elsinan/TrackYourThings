@@ -8,8 +8,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_BACKEND: ${{ github.repository }}/backend
-  IMAGE_NAME_FRONTEND: ${{ github.repository }}/frontend
+  IMAGE_NAME_BACKEND: trackyourthings/backend
+  IMAGE_NAME_FRONTEND: trackyourthings/frontend
 
 jobs:
   # Backend Tests and Build
@@ -171,25 +171,3 @@ jobs:
         labels: ${{ steps.meta-frontend.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-
-  # Deploy to staging/production (optional)
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Deploy to staging
-      run: |
-        echo "🚀 Deploying to staging environment..."
-        # Here you would add your deployment commands
-        # For example, deploying to a server via SSH, Kubernetes, etc.
-        
-        # Example for deploying with docker-compose to a remote server:
-        # - Copy docker-compose.yml to server
-        # - SSH into server and run: docker-compose pull && docker-compose up -d
-        
-        echo "✅ Deployment completed!"

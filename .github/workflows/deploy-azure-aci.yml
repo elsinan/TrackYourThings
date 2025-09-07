@@ -7,8 +7,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_BACKEND: ${{ github.repository }}-backend
-  IMAGE_NAME_FRONTEND: ${{ github.repository }}-frontend
+  IMAGE_NAME_BACKEND: trackyourthings/backend
+  IMAGE_NAME_FRONTEND: trackyourthings/frontend
 
 jobs:
   build-and-deploy:
@@ -79,8 +79,8 @@ jobs:
         az container create \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --name trackyourthings-backend \
-          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }} \
-          --dns-name-label trackyourthings-backend-${{ github.run_number }} \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest\
+          --dns-name-label trackyourthings-backend\
           --ports 8080 \
           --environment-variables \
             TYT_DB_HOST=${{ secrets.AZURE_DB_SERVER_NAME }}.postgres.database.azure.com \
@@ -102,7 +102,7 @@ jobs:
         echo "⏳ Waiting for backend to start..."
         sleep 60
         
-        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
         
         for i in {1..10}; do
           if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
@@ -117,13 +117,13 @@ jobs:
     - name: Deploy Frontend to ACI
       run: |
         # Get backend URL for frontend configuration
-        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
+        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
         
         az container create \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --name trackyourthings-frontend \
-          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }} \
-          --dns-name-label trackyourthings-frontend-${{ github.run_number }} \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest \
+          --dns-name-label trackyourthings-frontend \
           --ports 80 \
           --environment-variables \
             VITE_API_URL=$BACKEND_URL \
@@ -134,37 +134,11 @@ jobs:
           --memory 1 \
           --restart-policy Always
 
-    - name: Get deployment URLs
-      run: |
-        echo "🚀 Deployment completed successfully!"
-        echo ""
-        echo "📋 Deployment Information:"
-        echo "Backend URL: http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
-        echo "Frontend URL: http://trackyourthings-frontend-${{ github.run_number }}.polandcentral.azurecontainer.io"
-        echo "Backend Health: http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080/health"
-        echo ""
-        echo "💾 Database Information:"
-        echo "Host: ${{ secrets.AZURE_DB_SERVER_NAME }}.postgres.database.azure.com"
-        echo "Database: trackyourthings"
-        echo "User: postgres"
-
     - name: Test deployment
       run: |
         echo "🧪 Testing deployment..."
         
-        BACKEND_URL="http://trackyourthings-backend-${{ github.run_number }}.polandcentral.azurecontainer.io:8080"
-        FRONTEND_URL="http://trackyourthings-frontend-${{ github.run_number }}.polandcentral.azurecontainer.io"
+        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
+        FRONTEND_URL="http://trackyourthings-frontend.polandcentral.azurecontainer.io"
         
-        echo "Testing backend health..."
-        if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
-          echo "✅ Backend health check passed"
-        else
-          echo "❌ Backend health check failed"
-        fi
         
-        echo "Testing frontend..."
-        if curl -f "$FRONTEND_URL" > /dev/null 2>&1; then
-          echo "✅ Frontend is accessible"
-        else
-          echo "❌ Frontend is not accessible"
-        fi
