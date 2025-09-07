@@ -8,29 +8,14 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME_BACKEND: trackyourthings/backend
-  IMAGE_NAME_FRONTEND: trackyourthings/frontend
+  IMAGE_NAME_BACKEND: ${{ github.repository_owner }}/trackyourthings/backend
+  IMAGE_NAME_FRONTEND: ${{ github.repository_owner }}/trackyourthings/frontend
 
 jobs:
   # Backend Tests and Build
   backend-tests:
     runs-on: ubuntu-latest
     name: Backend Tests
-    
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: trackyourthings_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
     - uses: actions/checkout@v4
@@ -59,12 +44,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
       working-directory: ./backend
-      env:
-        TYT_DB_HOST: localhost
-        TYT_DB_PORT: 5432
-        TYT_DB_USER: postgres
-        TYT_DB_PASSWORD: postgres
-        TYT_DB_NAME: trackyourthings_test
+
 
   # Frontend Tests and Build
   frontend-tests:
