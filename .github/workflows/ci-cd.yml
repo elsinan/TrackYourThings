@@ -199,8 +199,9 @@ jobs:
         az container create \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --name trackyourthings-backend \
-          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest\
-          --dns-name-label trackyourthings-backend\
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest \
+          --location polandcentral \
+          --dns-name-label trackyourthings-backend \
           --ports 8080 \
           --environment-variables \
             TYT_DB_HOST=${{ secrets.AZURE_DB_SERVER_NAME }}.postgres.database.azure.com \
@@ -226,10 +227,10 @@ jobs:
         
         for i in {1..10}; do
           if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
-            echo "✅ Backend is healthy!"
+            echo "Backend is healthy!"
             break
           else
-            echo "⏳ Backend not ready yet, waiting... ($i/10)"
+            echo "Backend not ready yet, waiting... ($i/10)"
             sleep 30
           fi
         done
@@ -244,6 +245,7 @@ jobs:
           --name trackyourthings-frontend \
           --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest \
           --dns-name-label trackyourthings-frontend \
+          --location polandcentral \
           --ports 80 \
           --environment-variables \
             VITE_API_URL=$BACKEND_URL \
