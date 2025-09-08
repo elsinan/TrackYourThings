@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ConsentServer.Swagger;
+namespace backend.Swagger;
 
 /// <summary>
 /// Makes all non-nullable properties required in the open api schema.
