@@ -10,6 +10,8 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME_BACKEND: ${{ github.repository_owner }}/trackyourthings/backend
   IMAGE_NAME_FRONTEND: ${{ github.repository_owner }}/trackyourthings/frontend
+  BACKEND_URL: http://trackyourthings-backend.polandcentral.azurecontainer.io:8080
+  FRONTEND_URL: http://trackyourthings-frontend.polandcentral.azurecontainer.io
 
 jobs:
   # Backend Tests and Build
@@ -223,11 +225,9 @@ jobs:
       run: |
         echo "Waiting for backend to start..."
         sleep 60
-        
-        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
-        
+
         for i in {1..10}; do
-          if curl -f "$BACKEND_URL/health" > /dev/null 2>&1; then
+          if curl -f "${{ env.BACKEND_URL }}/health" > /dev/null 2>&1; then
             echo "Backend is healthy!"
             break
           else
@@ -238,9 +238,7 @@ jobs:
 
     - name: Deploy Frontend to ACI
       run: |
-        # Get backend URL for frontend configuration
-        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
-        
+
         az container create \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --name trackyourthings-frontend \
@@ -250,7 +248,7 @@ jobs:
           --os-type Linux \
           --ports 80 \
           --environment-variables \
-            VITE_API_URL=$BACKEND_URL \
+            VITE_BACKEND_URL=${{ env.BACKEND_URL }} \
           --registry-login-server ${{ env.REGISTRY }} \
           --registry-username ${{ github.actor }} \
           --registry-password ${{ secrets.GITHUB_TOKEN }} \
@@ -258,12 +256,8 @@ jobs:
           --memory 1 \
           --restart-policy Always
 
-    - name: Test deployment
-      run: |
-        echo "Testing deployment..."
-        
-        BACKEND_URL="http://trackyourthings-backend.polandcentral.azurecontainer.io:8080"
-        FRONTEND_URL="http://trackyourthings-frontend.polandcentral.azurecontainer.io"
+
+
         
         
 
