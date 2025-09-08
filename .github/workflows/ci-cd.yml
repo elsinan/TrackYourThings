@@ -201,7 +201,7 @@ jobs:
           --name trackyourthings-backend \
           --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:latest \
           --location polandcentral \
-          --os-type Linux
+          --os-type Linux \
           --dns-name-label trackyourthings-backend \
           --ports 8080 \
           --environment-variables \
@@ -247,7 +247,7 @@ jobs:
           --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:latest \
           --dns-name-label trackyourthings-frontend \
           --location polandcentral \
-          --os-type Linux
+          --os-type Linux \
           --ports 80 \
           --environment-variables \
             VITE_API_URL=$BACKEND_URL \
