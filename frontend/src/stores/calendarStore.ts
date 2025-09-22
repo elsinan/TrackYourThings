@@ -9,8 +9,10 @@ export const useCalendarStore = defineStore('calendar', {
     selectedDate: toCalendarDate(now(getLocalTimeZone())),
     selectedTrackItemId: '',
     selectedTrackItem: '',
+    trackingId: '',
   }),
   actions: {
+
     getAllTrackedItems() {},
 
     getTrackedItem() {},
