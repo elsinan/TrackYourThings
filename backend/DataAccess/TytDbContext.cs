@@ -5,12 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace backend.DataAccess;
 
 /// <inheritdoc />
-public class TytDbContext : DbContext
+/// <inheritdoc />
+public class TytDbContext(DbContextOptions<TytDbContext> options) : DbContext(options)
 {
-    /// <inheritdoc />
-    public TytDbContext(DbContextOptions<TytDbContext> options)
-        : base(options) { }
-
     public DbSet<TrackedItem> TrackedItems { get; set; }
     public DbSet<TrackingEntry> TrackingEntry { get; set; }
 }

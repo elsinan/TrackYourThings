@@ -9,21 +9,30 @@
         Wenn Du noch keinen Code hast, generiere einen neuen oder nutze die Seite ohne Speicherung.
       </p>
       <div class="flex gap-5 justify-center items-start w-full">
-          <UTextarea placeholder="Code eingeben" :rows="1" autoresize class="w-full"  v-model:model-value="code"/>
-          <UButton label="Neuen Code erstellen" variant="subtle" color="neutral" />
-
+        <UTextarea
+          placeholder="Code eingeben"
+          :rows="1"
+          autoresize
+          class="w-full"
+          v-model:model-value="code"
+        />
+        <UButton label="Neuen Code erstellen" variant="subtle" color="neutral" />
       </div>
-      <UButton :label="code? 'Weiter mit Code' : 'Weiter ohne Code'" icon="i-lucide-arrow-right"/>
+      <UButton :label="code ? 'Weiter mit Code' : 'Weiter ohne Code'" icon="i-lucide-arrow-right" @click="goToHome" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const code = ref('')
 
+const goToHome = () => {
+  router.push('/home')
+}
 </script>
 
 <style scoped></style>

@@ -15,7 +15,7 @@ public class TrackedItem
     /// <summary>
     /// Creator of the tracked item.
     /// </summary>
-    public required string CreatorId { get; set; }
+    public required string UserKey { get; set; }
 
     /// <summary>
     /// Entries of the tracked item.

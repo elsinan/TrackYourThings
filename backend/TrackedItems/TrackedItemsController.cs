@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.TrackedItems;
 
+[Route("api/[controller]")]
+[ApiController]
+[Authorize]
 public class TrackedItemsController(ITrackedItemService itemService) : ControllerBase
 {
 
@@ -25,7 +28,7 @@ public class TrackedItemsController(ITrackedItemService itemService) : Controlle
         (
             ItemId: item.Item1,
             Title: item.Item2
-            
+
         )).ToList();
 
         return Ok(response);
