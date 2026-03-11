@@ -1,7 +1,15 @@
+
 namespace backend.DataAccess.Models;
 
 public class TrackedItem
 {
+    // [SetsRequiredMembers]
+    // public TrackedItem(string userKey, string? title)
+    // {
+    //     this.UserKey = userKey;
+    //     this.Title = title;
+    // }
+
     /// <summary>
     /// Primary key of the tracked item.
     /// </summary>

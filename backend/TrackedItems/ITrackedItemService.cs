@@ -26,7 +26,7 @@ public interface ITrackedItemService
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
     /// <returns></returns>
-    Task<TrackedItem> CreateTrackedItem(string name);
+    Task<TrackedItem> CreateTrackedItem(string userId, string name);
 
     /// <summary>
     /// This method changes the name of a tracked item.

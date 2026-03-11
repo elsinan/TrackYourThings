@@ -6,12 +6,16 @@ class TrackedItemService(TytDbContext dbContext) : ITrackedItemService
 {
     public async Task<TrackedItem> CreateTrackedItem(string userKey, string name)
     {
-        TrackedItem item = new TrackedItem()
-        await dbContext.TrackedItems.Add(name);
+        // TODO: Check if user key is valid
+        
+        var item = new TrackedItem { UserKey = userKey, Title = name };
+        await dbContext.TrackedItems.AddAsync(item);
+        return item;
     }
 
     public Task<TrackedItem> DeleteTrackedItemById(int id)
     {
+        // Check if 
         throw new NotImplementedException();
     }
 
