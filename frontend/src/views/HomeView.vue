@@ -26,13 +26,14 @@
         <UCard>
           <div class="flex flex-col items-center gap-5">
             <p>Erstelle ein erstes Ding, welches Du tracken willst.</p>
-            <UInput placeholder="Name" v-model="newTrackItemName"/>
+            <UInput placeholder="Name" v-model="newTrackItemName" />
 
             <UButton
-            label="Track Item erstellen"
-            variant="subtle"
-            icon="i-lucide-plus"
-            @click="createTrackedItem" />
+              label="Track Item erstellen"
+              variant="subtle"
+              icon="i-lucide-plus"
+              @click="createTrackedItem"
+            />
           </div>
         </UCard>
       </div>
