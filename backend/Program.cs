@@ -31,11 +31,9 @@ builder.Services.AddSwaggerGen();
 // Configure PostgreSQL Database
 var host = Environment.GetEnvironmentVariable("TYT_DB_HOST") ?? "localhost";
 var port = Environment.GetEnvironmentVariable("TYT_DB_PORT") ?? "5432";
-var frontend_host = Environment.GetEnvironmentVariable("TYT_FRONTEND_HOST") ?? "localhost";
-var frontend_port = Environment.GetEnvironmentVariable("TYT_FRONTEND_PORT") ?? "5173";
+var database = Environment.GetEnvironmentVariable("TYT_DB_NAME") ?? "TrackYourThings";
 var user = Environment.GetEnvironmentVariable("TYT_DB_USER") ?? "postgres";
 var password = Environment.GetEnvironmentVariable("TYT_DB_PASSWORD") ?? "postgres";
-var database = Environment.GetEnvironmentVariable("TYT_DB_NAME") ?? "TrackYourThings";
 
 var connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password}";
 
