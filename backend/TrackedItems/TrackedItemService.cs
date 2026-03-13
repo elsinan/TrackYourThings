@@ -1,36 +1,47 @@
 using backend.DataAccess;
 using backend.DataAccess.Models;
 using backend.TrackedItems;
+using Microsoft.EntityFrameworkCore;
 
 class TrackedItemService(TytDbContext dbContext) : ITrackedItemService
 {
-    public async Task<TrackedItem> CreateTrackedItem(string userKey, string name)
+    public async Task<TrackedItem> CreateTrackedItem(Guid userId, string name)
     {
-        // TODO: Check if user key is valid
-        
-        var item = new TrackedItem { UserKey = userKey, Title = name };
+        var item = new TrackedItem { UserId = userId, Title = name };
         await dbContext.TrackedItems.AddAsync(item);
+        await dbContext.SaveChangesAsync();
         return item;
     }
 
-    public Task<TrackedItem> DeleteTrackedItemById(int id)
+    public async Task<bool> DeleteTrackedItemById(Guid userId, int id)
     {
-        // Check if 
-        throw new NotImplementedException();
+        var item = await dbContext.TrackedItems.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == id);
+        if (item == null) return false;
+        dbContext.TrackedItems.Remove(item);
+        await dbContext.SaveChangesAsync();
+        return true;
+
     }
 
-    public Task<List<Tuple<int, string>>> GetAllTrackedItems()
+    public async Task<List<Tuple<int, string>>> GetAllTrackedItems(Guid userId)
     {
-        throw new NotImplementedException();
+        return await dbContext.TrackedItems.Where(item => item.UserId == userId)
+            .Select(item => new Tuple<int, string>(item.Id, item.Title))
+            .ToListAsync();
     }
 
-    public Task<TrackedItem> GetTrackedItemById(int id)
+    public async Task<TrackedItem?> GetTrackedItemById(Guid userId, int id)
     {
-        throw new NotImplementedException();
+        return await dbContext.TrackedItems.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == id);
     }
 
-    public Task<TrackedItem> ModifyTrackedItemName(int id, string newName)
+    public async Task<bool> ModifyTrackedItemName(Guid userId, int id, string newName)
     {
-        throw new NotImplementedException();
+        var item = await dbContext.TrackedItems.FirstOrDefaultAsync(item => item.UserId == userId && item.Id == id);
+        if (item == null) return false;
+        item.Title = newName;
+        await dbContext.SaveChangesAsync();
+        
+        return true;
     }
 }

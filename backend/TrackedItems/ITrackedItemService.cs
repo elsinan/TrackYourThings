@@ -12,35 +12,33 @@ public interface ITrackedItemService
     /// This method returns the names and ids of all tracked items
     /// </summary>
     /// <returns></returns>
-    Task<List<Tuple<int, string>>> GetAllTrackedItems();
+    Task<List<Tuple<int, string>>> GetAllTrackedItems(Guid userId);
 
     /// <summary>
     /// This method return a tracked item with the given id.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
     /// <returns></returns>
-    Task<TrackedItem> GetTrackedItemById(int id);
+    Task<TrackedItem?> GetTrackedItemById(Guid userId, int id);
 
     /// <summary>
     /// This method creates a tracked item with the given name.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
     /// <returns></returns>
-    Task<TrackedItem> CreateTrackedItem(string userId, string name);
+    Task<TrackedItem> CreateTrackedItem(Guid userId, string name);
 
     /// <summary>
     /// This method changes the name of a tracked item.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
     /// <returns></returns>
-    Task<TrackedItem> ModifyTrackedItemName(int id, string newName);
+    Task<bool> ModifyTrackedItemName(Guid userId, int id, string newName);
 
     /// <summary>
     /// This method return a tracked item with the given id.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
     /// <returns></returns>
-    Task<TrackedItem> DeleteTrackedItemById(int id);
-
-
+    Task<bool> DeleteTrackedItemById(Guid userId, int id);
 }

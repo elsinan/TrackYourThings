@@ -8,11 +8,6 @@ namespace backend.TrackingEntries;
 /// </summary>
 public interface ITrackingEntryService
 {
-    /// <summary>
-    /// This method returns the all tracking entries of a given track item.
-    /// </summary>
-    /// <returns></returns>
-    Task<List<TrackingEntry>> GetAllTrackingEntriesById(int id);
 
     /// <summary>
     /// This method creates a tracked item with the given name.
