@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.DataAccess;
@@ -11,9 +12,11 @@ using backend.DataAccess;
 namespace backend.Migrations
 {
     [DbContext(typeof(TytDbContext))]
-    partial class TytDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260313135420_CreateTrackedItem")]
+    partial class CreateTrackedItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

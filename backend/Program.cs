@@ -1,18 +1,29 @@
+using System.Text;
 using System.Text.Json;
+using backend.Auth;
 using backend.DataAccess;
+using backend.TrackedItems;
 using Backend.ErrorHandling;
-
-
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options
-    => options.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddCors(opt => opt.AddPolicy("frontend", policy =>
+    policy
+        .WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+));
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -29,6 +40,7 @@ var database = Environment.GetEnvironmentVariable("TYT_DB_NAME") ?? "TrackYourTh
 var connectionString = $"Host={host};Port={port};Database={database};Username={user};Password={password}";
 
 builder.Services.AddDbContext<TytDbContext>(options => options.UseNpgsql(connectionString));
+
 builder.Services.AddMemoryCache();
 builder.Services.AddFido2(options =>
 {
@@ -43,13 +55,31 @@ builder.Services.AddFido2(options =>
 });
 
 
-// Session für temporäre Challenge-Speicherung
+// Session für temporäre Challenge-Speicherung und Sessions
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddScoped<IPasskeyService, PasskeyService>();
+builder.Services.AddScoped<ITrackedItemService, TrackedItemService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
+        };
+    });
+
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(5);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.None; // Erlaubt Cross-Site Cookies
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Benötigt HTTPS
+    options.IdleTimeout = TimeSpan.FromMinutes(2); // Kurz für Passkeys reicht
 });
 
 var app = builder.Build();
@@ -66,7 +96,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseCors();
+app.UseCors("frontend");
+app.UseSession();
 
 app.UseExceptionHandler(appBuilder =>
 {
