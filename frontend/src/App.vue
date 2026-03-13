@@ -17,7 +17,6 @@ const cookieValue = document.cookie
 if (cookieValue) {
   store.trackingId = cookieValue
   console.log(cookieValue)
-  store.getAllTrackedItems();
+  store.getAllTrackedItems()
 }
-
 </script>

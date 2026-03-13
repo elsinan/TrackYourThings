@@ -12,7 +12,6 @@ export const useCalendarStore = defineStore('calendar', {
     trackingId: '',
   }),
   actions: {
-
     getAllTrackedItems() {},
 
     getTrackedItem() {},
