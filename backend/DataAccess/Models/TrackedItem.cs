@@ -1,7 +1,9 @@
+
 namespace backend.DataAccess.Models;
 
 public class TrackedItem
 {
+
     /// <summary>
     /// Primary key of the tracked item.
     /// </summary>
@@ -10,12 +12,12 @@ public class TrackedItem
     /// <summary>
     /// Title of the tracked item.
     /// </summary>
-    public string? Title { get; set; }
+    public required string Title { get; set; }
 
     /// <summary>
     /// Creator of the tracked item.
     /// </summary>
-    public required string CreatorId { get; set; }
+    public required Guid UserId { get; set; }
 
     /// <summary>
     /// Entries of the tracked item.
