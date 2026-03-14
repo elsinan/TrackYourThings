@@ -13,9 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+var frontend_host = Environment.GetEnvironmentVariable("TYT_ORIGINS") ?? "http://localhost:5173";
+var frontend_domain = Environment.GetEnvironmentVariable("TYT_FRONTEND_DOMAIN") ?? "localhost";
+
 builder.Services.AddCors(opt => opt.AddPolicy("frontend", policy =>
     policy
-        .WithOrigins("http://localhost:5173")
+        .WithOrigins(frontend_host)
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
@@ -42,11 +45,9 @@ builder.Services.AddDbContext<TytDbContext>(options => options.UseNpgsql(connect
 builder.Services.AddMemoryCache();
 builder.Services.AddFido2(options =>
 {
-    options.ServerDomain = builder.Configuration["Fido2:ServerDomain"];
-    options.ServerName = builder.Configuration["Fido2:ServerName"];
-    options.Origins = builder.Configuration
-        .GetSection("Fido2:Origins")
-        .Get<HashSet<string>>();
+    options.ServerDomain = frontend_domain;
+    options.ServerName = "TrackYourThings";
+    options.Origins = new HashSet<string> { $"{frontend_host}" };
 }).AddCachedMetadataService(config =>
 {
     config.AddFidoMetadataRepository();
