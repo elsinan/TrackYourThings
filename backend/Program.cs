@@ -69,6 +69,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+app.UseCors("frontend");
 // Migrate database
 using (var scope = app.Services.CreateScope())
 {
@@ -81,7 +82,6 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseCors("frontend");
 app.UseSession();
 
 app.UseExceptionHandler(appBuilder =>

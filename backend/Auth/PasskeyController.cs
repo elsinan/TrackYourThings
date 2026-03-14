@@ -32,7 +32,7 @@ public class PasskeyController : ControllerBase
         Response.Cookies.Append("sid", sessionId, new CookieOptions {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(3)
         });
         return Ok();
@@ -58,7 +58,7 @@ public class PasskeyController : ControllerBase
         Response.Cookies.Append("sid", sessionId, new CookieOptions {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTime.UtcNow.AddDays(3)
         });
 
