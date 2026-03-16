@@ -13,22 +13,17 @@ public interface ITrackingEntryService
     /// This method creates a tracked item with the given name.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
+    /// <param name="amount">the amount to track</param>
+    /// <param name="date">the date of the tracking entry</param>
     /// <returns></returns>
-    Task<TrackedItem> CreateTrackedItem(int id, TrackingEntry newItem);
+    Task<TrackedItem> AddOrModifyTrackingEntry(int id, int amount, DateTime date);
 
-    /// <summary>
-    /// This method changes the name of a tracked item.
-    /// </summary>
-    /// <param name="id">the id of the tracked item which should looked up</param>
-    /// <returns></returns>
-    Task<TrackedItem> ModifyTrackingItem(int id, string newName);
 
     /// <summary>
     /// This method return a tracked item with the given id.
     /// </summary>
     /// <param name="id">the id of the tracked item which should looked up</param>
+    /// <param name="date">the date of the tracking entry</param>
     /// <returns></returns>
-    Task<TrackedItem> DeleteTrackingEntryById(int id);
-
-
+    Task<TrackedItem> DeleteTrackingEntryById(int id, DateTime date);
 }

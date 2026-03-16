@@ -16,7 +16,7 @@
           icon="i-lucide-trash"
           variant="outline"
           color="error"
-          @click="store.dateSelected = false"
+          @click="store.selectedDate = toCalendarDate(now(getLocalTimeZone()))"
         />
         <UButton size="xl" label="Speichern" />
       </div>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { useCalendarStore } from '@/stores/calendarStore'
-import { getLocalTimeZone } from '@internationalized/date'
+import { getLocalTimeZone, now, toCalendarDate } from '@internationalized/date'
 
 const store = useCalendarStore()
 </script>

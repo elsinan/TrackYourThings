@@ -1,13 +1,31 @@
 <script setup lang="ts">
-import { shallowRef } from 'vue'
+import { shallowRef, watch } from 'vue'
 
 import CalendarInput from './CalendarInput.vue'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useCalendarStore } from '@/stores/calendarStore'
+import { CalendarDate } from '@internationalized/date'
 
 const store = useCalendarStore()
 
-const data = shallowRef([])
+const date = shallowRef(
+  new CalendarDate(
+    store.selectedDate.calendar,
+    store.selectedDate.era,
+    store.selectedDate.year,
+    store.selectedDate.month,
+    store.selectedDate.day,
+  ),
+)
+
+watch(
+  () => date.value,
+  (newData) => {
+    store.selectedDate = newData
+  },
+  { deep: true },
+)
+
 const items: DropdownMenuItem[] = [
   {
     label: 'Namen ändern',
@@ -52,13 +70,13 @@ const items: DropdownMenuItem[] = [
       </div>
     </template>
 
-    <UCalendar locale="de" v-model="data" size="xl">
+    <UCalendar locale="de" v-model="date" size="xl">
       <template #day="{ day }">
         {{ day.day }}
       </template>
     </UCalendar>
 
-    <template #footer v-if="store.dateSelected">
+    <template #footer>
       <CalendarInput />
     </template>
   </UCard>
